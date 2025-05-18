@@ -1,10 +1,11 @@
 {
   "name": "monaco-esm",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js"
+    "build": "node build.js",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,11 @@
   },
   "devDependencies": {
     "@flexbe/eslint-config": "^1.0.7",
+    "esbuild-plugin-inline-worker": "^0.1.1",
     "eslint": "^9.27.0"
   },
-  "type": "module"
+  "type": "module",
+  "module": "dist/index.js",
+  "browser": "dist/index.js",
+  "types": "index.d.ts"
 }

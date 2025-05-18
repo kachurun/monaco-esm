@@ -8,13 +8,14 @@
 		<div id="container" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 
 		<script type="module">
-			import { getMonacoEditor } from './dist/index.js';
+			import { loadCss, initMonacoEditor } from './dist/index.js';
 			
-			const monaco = getMonacoEditor();
+			void loadCss();
+			const monaco = await initMonacoEditor();
 			
 			monaco.editor.create(document.getElementById('container'), {
-				value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-				language: 'javascript'
+				value: ['function x(a: string) {', '\tconsole.log("Hello world!", a);', '}'].join('\n'),
+				language: 'typescript'
 			});
 		</script>
 	</body>

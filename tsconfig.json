@@ -19,5 +19,5 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["index.mjs", "build.js"]
+  "include": ["**/*.mjs", "**/*.ts"]
 }

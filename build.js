@@ -1,8 +1,5 @@
-/* ---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *-------------------------------------------------------------------------------------------- */
 import esbuild from 'esbuild';
+import inlineWorkerPlugin from 'esbuild-plugin-inline-worker';
 import fs from 'fs';
 import path from 'path';
 
@@ -41,32 +38,33 @@ const onlyInlineLocalCss = {
 async function runBuild() {
     console.group('Building...');
 
-    console.log('Build CSS');
+    console.log('Build Monaco Editor CSS');
     await build({
         entryPoints: ['node_modules/monaco-editor/min/vs/editor/editor.main.css'],
         bundle: true,
-        outfile: path.join(__dirname, 'dist', 'index.css'),
+        outfile: path.join(__dirname, '.build', 'index.css'),
         loader: {
             '.ttf': 'dataurl',
         },
     });
 
-    console.log('Build Workers');
+    console.log('Pre-Build Monaco Editor Workers');
     await build({
         entryPoints: workerEntryPoints.map(entry => `node_modules/monaco-editor/esm/${ entry }`),
         bundle: true,
         format: 'iife',
-        outbase: 'node_modules/monaco-editor/esm/',
-        outdir: path.join(__dirname, 'dist'),
+        // outbase: 'node_modules/monaco-editor/esm/',
+        outdir: path.join(__dirname, '.build'),
+        entryNames: '[name]',
     });
 
-    console.log('Build Monaco Editor');
+    console.log('Bundle Monaco Editor');
     await build({
-        entryPoints: ['index.mjs'],
+        entryPoints: ['./src/index.ts'],
         bundle: true,
         format: 'esm',
-        outdir: path.join(__dirname, 'dist'),
-        plugins: [onlyInlineLocalCss],
+        outfile: path.join(__dirname, 'dist', 'index.js'),
+        plugins: [onlyInlineLocalCss, inlineWorkerPlugin()],
         loader: {
             '.css': 'text',
         },
