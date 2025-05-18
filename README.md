@@ -1,5 +1,7 @@
 # monaco-esm
 
+Made with ❤️ by [flexbe.ai](https://flexbe.ai/) team
+
 [![monthly downloads](https://img.shields.io/npm/dm/monaco-esm)](https://www.npmjs.com/package/monaco-esm)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![npm version](https://img.shields.io/npm/v/monaco-esm.svg?style=flat)](https://www.npmjs.com/package/monaco-esm)
@@ -80,7 +82,7 @@ monaco.editor.create(document.getElementById('container'), {
 - Loads Monaco via CDN
 - Requires `require.js` (AMD)
 - Needs custom worker setup
-- Doesn’t inject styles
+- Doesn't inject styles
 
 `monaco-esm` removes all that friction:
 
@@ -97,14 +99,14 @@ monaco.editor.create(document.getElementById('container'), {
 This package exports:
 
 - `monaco`: Full Monaco Editor API
-- `loadCss(styleId?, doc?)`: Injects Monaco’s built-in CSS into the document
+- `loadCss(styleId?, doc?)`: Injects Monaco's built-in CSS into the document
 - Re-exports all types and APIs from `monaco-editor`
 
 ---
 
 ## TypeScript Support
 
-You don’t need to install `monaco-editor` separately. All types and APIs are re-exported:
+You don't need to install `monaco-editor` separately. All types and APIs are re-exported:
 
 ```ts
 import type { monaco, editor } from 'monaco-esm';
@@ -138,7 +140,7 @@ const { monaco } = require('monaco-esm');
 
 ### Electron
 
-This package works well in Electron. If you’re loading workers in a sandboxed context, you may need to configure security policies accordingly.
+This package works well in Electron. If you're loading workers in a sandboxed context, you may need to configure security policies accordingly.
 
 ### Next.js
 
