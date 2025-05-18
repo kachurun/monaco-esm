@@ -63,17 +63,25 @@ async function runBuild() {
         entryPoints: ['./src/index.ts'],
         bundle: true,
         format: 'esm',
-        outfile: path.join(__dirname, 'dist', 'index.js'),
+        outfile: path.join(__dirname, 'dist', 'index.mjs'),
         plugins: [onlyInlineLocalCss, inlineWorkerPlugin()],
         loader: {
             '.css': 'text',
         },
     });
 
-    console.log('Prepare type declarations');
+    console.log('Bundle Monaco Editor (CJS)');
+    await build({
+        entryPoints: ['./src/index.ts'],
+        bundle: true,
+        format: 'cjs',
+        outfile: path.join(__dirname, 'dist', 'index.cjs'),
+        plugins: [onlyInlineLocalCss, inlineWorkerPlugin()],
+        loader: {
+            '.css': 'text',
+        },
+    });
 
-    // Copy type declarations
-    await fs.promises.copyFile(path.join(__dirname, 'src', 'index.d.ts'), path.join(__dirname, 'dist', 'index.d.ts'));
     console.log('Build done');
 
     console.groupEnd();

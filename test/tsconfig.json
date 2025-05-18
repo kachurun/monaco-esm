@@ -20,6 +20,6 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "nodenext"
   },
-  "include": ["src/**/*.ts", "src/index.d.ts"],
-  "exclude": ["node_modules", "test", "dist"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

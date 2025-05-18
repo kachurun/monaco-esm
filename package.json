@@ -2,14 +2,19 @@
   "name": "monaco-esm",
   "version": "1.0.4",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "browser": "dist/index.js",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "browser": "dist/index.mjs",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs",
+    "types": "./dist/index.d.ts"
+  },
   "types": "dist/index.d.ts",
 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js",
+    "build": "node build.js && tsc --emitDeclarationOnly",
     "prepublishOnly": "npm run build"
   },
 
@@ -17,6 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/kachurun/monaco-esm.git"
   },
+
   "author": "Maksim Kachurin",
   "license": "ISC",
   "bugs": {

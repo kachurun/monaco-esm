@@ -17,6 +17,8 @@ import TSWorker from '../.build/ts.worker.js';
 // @ts-ignore
 import css from '../.build/index.css';
 
+export * from 'monaco-editor';
+
 export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
     if (doc.getElementById(styleId)) {
         return;
