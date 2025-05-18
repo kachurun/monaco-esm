@@ -1,6 +1,6 @@
 {
   "name": "monaco-esm",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -29,7 +29,7 @@
     "url": "https://github.com/kachurun/monaco-esm/issues"
   },
   "homepage": "https://github.com/kachurun/monaco-esm#readme",
-  "description": "The utility to easily set up `monaco-editor` as native ES modules in your browser, without bundlers, css files and workers.",
+  "description": "Native ES module build of Monaco Editor with bundled workers and styles. No AMD, no config — just import and go.",
   "dependencies": {
     "esbuild": "^0.25.4",
     "monaco-editor": "^0.52.2"
