@@ -1,52 +1,95 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 import esbuild from 'esbuild';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-removeDir('dist', (entry) => /index.html$/.test(entry));
+removeDir('dist');
 
 const workerEntryPoints = [
-	'vs/language/json/json.worker.js',
-	'vs/language/css/css.worker.js',
-	'vs/language/html/html.worker.js',
-	'vs/language/typescript/ts.worker.js',
-	'vs/editor/editor.worker.js'
+    'vs/language/json/json.worker.js',
+    'vs/language/css/css.worker.js',
+    'vs/language/html/html.worker.js',
+    'vs/language/typescript/ts.worker.js',
+    'vs/editor/editor.worker.js',
 ];
 
-build({
-	entryPoints: workerEntryPoints.map((entry) => `node_modules/monaco-editor/esm/${entry}`),
-	bundle: true,
-	format: 'iife',
-	outbase: 'node_modules/monaco-editor/esm/',
-	outdir: path.join(__dirname, 'dist')
-});
+const onlyInlineLocalCss = {
+    name: 'only-inline-local-css',
+    setup(build) {
+        build.onLoad({ filter: /\.css$/ }, async(args) => {
+            if (!args.path.includes('node_modules')) {
+                return {
+                    contents: await fs.promises.readFile(args.path, 'utf8'),
+                    loader: 'text',
+                };
+            }
 
-build({
-	entryPoints: ['index.mjs'],
-	bundle: true,
-	format: 'esm',
-	outdir: path.join(__dirname, 'dist'),
-	loader: {
-		'.ttf': 'dataurl'
-	}
-});
+            // For node_modules CSS, treat as empty (ignored)
+            return {
+                contents: '',
+                loader: 'text',
+            };
+        });
+    },
+};
+
+async function runBuild() {
+    console.group('Building...');
+
+    console.log('Build css');
+    await build({
+        entryPoints: ['node_modules/monaco-editor/min/vs/editor/editor.main.css'],
+        bundle: true,
+        outdir: path.join(__dirname, 'dist'),
+        loader: {
+            '.ttf': 'dataurl',
+        },
+    });
+
+    console.log('Build Workers');
+    await build({
+        entryPoints: workerEntryPoints.map(entry => `node_modules/monaco-editor/esm/${ entry }`),
+        bundle: true,
+        format: 'iife',
+        outbase: 'node_modules/monaco-editor/esm/',
+        outdir: path.join(__dirname, 'dist'),
+    });
+
+    console.log('Build Monaco Editor');
+    await build({
+        entryPoints: ['index.mjs'],
+        bundle: true,
+        format: 'esm',
+        outdir: path.join(__dirname, 'dist'),
+        plugins: [onlyInlineLocalCss],
+        loader: {
+            '.css': 'text',
+        },
+    });
+    console.log('Build done');
+
+    console.groupEnd();
+}
+
+runBuild();
 
 /**
  * @param {import ('esbuild').BuildOptions} opts
  */
-function build(opts) {
-	esbuild.build(opts).then((result) => {
-		if (result.errors.length > 0) {
-			console.error(result.errors);
-		}
-		if (result.warnings.length > 0) {
-			console.error(result.warnings);
-		}
-	});
+async function build(opts) {
+    return esbuild.build(opts).then((result) => {
+        if (result.errors.length > 0) {
+            console.error(result.errors);
+        }
+        if (result.warnings.length > 0) {
+            console.error(result.warnings);
+        }
+    });
 }
 
 /**
@@ -55,40 +98,43 @@ function build(opts) {
  * @param {(filename: string) => boolean} [keep]
  */
 function removeDir(_dirPath, keep) {
-	if (typeof keep === 'undefined') {
-		keep = () => false;
-	}
-	const dirPath = path.join(__dirname, _dirPath);
-	if (!fs.existsSync(dirPath)) {
-		return;
-	}
-	rmDir(dirPath, _dirPath);
-	console.log(`Deleted ${_dirPath}`);
+    if (typeof keep === 'undefined') {
+        keep = () => false;
+    }
 
-	/**
-	 * @param {string} dirPath
-	 * @param {string} relativeDirPath
-	 * @returns {boolean}
-	 */
-	function rmDir(dirPath, relativeDirPath) {
-		let keepsFiles = false;
-		const entries = fs.readdirSync(dirPath);
-		for (const entry of entries) {
-			const filePath = path.join(dirPath, entry);
-			const relativeFilePath = path.join(relativeDirPath, entry);
-			if (keep(relativeFilePath)) {
-				keepsFiles = true;
-				continue;
-			}
-			if (fs.statSync(filePath).isFile()) {
-				fs.unlinkSync(filePath);
-			} else {
-				keepsFiles = rmDir(filePath, relativeFilePath) || keepsFiles;
-			}
-		}
-		if (!keepsFiles) {
-			fs.rmdirSync(dirPath);
-		}
-		return keepsFiles;
-	}
+    const dirPath = path.join(__dirname, _dirPath);
+
+    if (!fs.existsSync(dirPath)) {
+        return;
+    }
+
+    rmDir(dirPath, _dirPath);
+
+    /**
+     * @param {string} dirPath
+     * @param {string} relativeDirPath
+     * @returns {boolean}
+     */
+    function rmDir(dirPath, relativeDirPath) {
+        let keepsFiles = false;
+        const entries = fs.readdirSync(dirPath);
+        for (const entry of entries) {
+            const filePath = path.join(dirPath, entry);
+            const relativeFilePath = path.join(relativeDirPath, entry);
+            if (keep(relativeFilePath)) {
+                keepsFiles = true;
+                continue;
+            }
+            if (fs.statSync(filePath).isFile()) {
+                fs.unlinkSync(filePath);
+            }
+            else {
+                keepsFiles = rmDir(filePath, relativeFilePath) || keepsFiles;
+            }
+        }
+        if (!keepsFiles) {
+            fs.rmdirSync(dirPath);
+        }
+        return keepsFiles;
+    }
 }
