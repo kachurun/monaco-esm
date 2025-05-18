@@ -1,0 +1,29 @@
+{
+  "name": "monaco-esm",
+  "version": "1.0.0",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kachurun/monaco-esm.git"
+  },
+  "author": "Maksim Kachurin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kachurun/monaco-esm/issues"
+  },
+  "homepage": "https://github.com/kachurun/monaco-esm#readme",
+  "description": "",
+  "dependencies": {
+    "esbuild": "^0.25.4",
+    "monaco-editor": "^0.52.2"
+  },
+  "devDependencies": {
+    "@flexbe/eslint-config": "^1.0.7",
+    "eslint": "^9.27.0"
+  },
+  "type": "module"
+}
