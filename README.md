@@ -71,7 +71,7 @@ monaco.editor.create(document.getElementById('container'), {
 </script>
 ```
 
-👉 [Live Example on CodeSandbox](https://codesandbox.io/p/sandbox/clever-sunset-7xcp4q)
+👉 [Live Example on CodeSandbox](https://codesandbox.io/p/sandbox/damp-hooks-7xcp4q)
 
 ---
 
