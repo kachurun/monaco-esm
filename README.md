@@ -1,6 +1,8 @@
 # monaco-esm &middot; [![monthly downloads](https://img.shields.io/npm/dm/monaco-esm)](https://www.npmjs.com/package/monaco-esm) [![gitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![npm version](https://img.shields.io/npm/v/monaco-esm.svg?style=flat)](https://www.npmjs.com/package/monaco-esm) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/monaco-esm/pulls)
 
-The utility to easily set up `monaco-editor` as native ES modules in your browser, without bundlers.
+Current Monaco Editor version: <!-- monaco-editor-version -->`monaco-editor@^0.52.2`<!-- /monaco-editor-version -->
+
+The utility to easily set up `monaco-editor` as native ES modules in your browser, without bundlers, css files and workers.
 
 ## Synopsis
 

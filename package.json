@@ -1,12 +1,18 @@
 {
   "name": "monaco-esm",
-  "version": "1.0.3",
-  "main": "build.js",
+  "version": "1.0.4",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "browser": "dist/index.js",
+  "types": "dist/index.d.ts",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
     "prepublishOnly": "npm run build"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kachurun/monaco-esm.git"
@@ -17,7 +23,7 @@
     "url": "https://github.com/kachurun/monaco-esm/issues"
   },
   "homepage": "https://github.com/kachurun/monaco-esm#readme",
-  "description": "",
+  "description": "The utility to easily set up `monaco-editor` as native ES modules in your browser, without bundlers, css files and workers.",
   "dependencies": {
     "esbuild": "^0.25.4",
     "monaco-editor": "^0.52.2"
@@ -27,10 +33,6 @@
     "esbuild-plugin-inline-worker": "^0.1.1",
     "eslint": "^9.27.0"
   },
-  "type": "module",
-  "module": "dist/index.js",
-  "browser": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist/",
     "README.md",
