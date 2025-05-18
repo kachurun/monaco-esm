@@ -41,11 +41,11 @@ const onlyInlineLocalCss = {
 async function runBuild() {
     console.group('Building...');
 
-    console.log('Build css');
+    console.log('Build CSS');
     await build({
         entryPoints: ['node_modules/monaco-editor/min/vs/editor/editor.main.css'],
         bundle: true,
-        outdir: path.join(__dirname, 'dist'),
+        outfile: path.join(__dirname, 'dist', 'index.css'),
         loader: {
             '.ttf': 'dataurl',
         },

@@ -1,23 +1,23 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
 
 // eslint-disable-next-line antfu/no-import-dist
-import css from './dist/editor.main.css';
+import css from './dist/index.css';
 
 globalThis.MonacoEnvironment = {
     getWorkerUrl(moduleId, label) {
         if (label === 'json') {
-            return './vs/language/json/json.worker.js';
+            return './dist/vs/language/json/json.worker.js';
         }
         if (label === 'css' || label === 'scss' || label === 'less') {
-            return './vs/language/css/css.worker.js';
+            return './dist/vs/language/css/css.worker.js';
         }
         if (label === 'html' || label === 'handlebars' || label === 'razor') {
-            return './vs/language/html/html.worker.js';
+            return './dist/vs/language/html/html.worker.js';
         }
         if (label === 'typescript' || label === 'javascript') {
-            return './vs/language/typescript/ts.worker.js';
+            return './dist/vs/language/typescript/ts.worker.js';
         }
-        return './vs/editor/editor.worker.js';
+        return './dist/vs/editor/editor.worker.js';
     },
 };
 
