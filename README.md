@@ -35,20 +35,20 @@ This project provides a pre-built, ESM-compatible version of Monaco Editor. You 
 npm install monaco-esm
 ```
 
-NOTE: For TypeScript type definitions, this package uses the [monaco-editor](https://www.npmjs.com/package/monaco-editor) package as a peer dependency. If you need types and don't already have [monaco-editor](https://www.npmjs.com/package/monaco-editor) installed, you will need to do so.
-
 ### Introduction
 
 This package provides ESM builds of Monaco Editor. You can import the editor and languages directly as ES modules. The main utilities are:
 
-- `loadCss()`: Injects Monaco Editor's CSS into the page.
+- `loadCss(styleId = 'monaco-editor-styles', doc = document)`: Injects Monaco Editor's CSS into the page.
 - `initMonacoEditor()`: Sets up Monaco's web workers and returns the Monaco API.
 
 ### Usage
 
 #### In the Browser (No Bundler)
 
-You can use Monaco Editor directly in the browser with native ES modules. Example:
+You can use Monaco Editor directly in the browser with native ES modules.
+
+Example:
 
 ```html
 <script type="module">
@@ -67,6 +67,8 @@ You can use Monaco Editor directly in the browser with native ES modules. Exampl
   });
 </script>
 ```
+
+[Live Example on CodeSandbox](https://codesandbox.io/p/sandbox/clever-sunset-7xcp4q)
 
 #### Or if you bundle your project with Vite/Webpack/Rollup/Esbuild/etc:
 

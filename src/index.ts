@@ -17,16 +17,17 @@ import TSWorker from '../.build/ts.worker.js';
 // @ts-ignore
 import css from '../.build/index.css';
 
-export function loadCss(styleId = 'monaco-editor-styles') {
-    if (document.getElementById(styleId)) {
+export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
+    if (doc.getElementById(styleId)) {
         return;
     }
 
-    const style = document.createElement('style');
+    const style = doc.createElement('style');
 
     style.id = styleId;
     style.textContent = css;
-    document.head.appendChild(style);
+
+    doc.head.appendChild(style);
 }
 
 export function initMonacoEditor(): typeof monaco {

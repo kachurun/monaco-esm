@@ -69,6 +69,11 @@ async function runBuild() {
             '.css': 'text',
         },
     });
+
+    console.log('Prepare type declarations');
+
+    // Copy type declarations
+    await fs.promises.copyFile(path.join(__dirname, 'src', 'index.d.ts'), path.join(__dirname, 'dist', 'index.d.ts'));
     console.log('Build done');
 
     console.groupEnd();
