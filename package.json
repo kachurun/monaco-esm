@@ -2,15 +2,15 @@
   "name": "monaco-esm",
   "version": "1.0.4",
   "type": "module",
-  "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
-  "browser": "dist/index.mjs",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
+    "types": "./dist/index.d.ts",
     "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
-    "types": "./dist/index.d.ts"
+    "require": "./dist/index.cjs"
   },
-  "types": "dist/index.d.ts",
 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,6 +40,7 @@
     "eslint": "^9.27.0"
   },
   "files": [
+    "src/",
     "dist/",
     "README.md",
     "LICENSE"

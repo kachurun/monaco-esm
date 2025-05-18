@@ -1,114 +1,151 @@
-# monaco-esm &middot; [![monthly downloads](https://img.shields.io/npm/dm/monaco-esm)](https://www.npmjs.com/package/monaco-esm) [![gitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![npm version](https://img.shields.io/npm/v/monaco-esm.svg?style=flat)](https://www.npmjs.com/package/monaco-esm) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/monaco-esm/pulls)
+# monaco-esm
 
-Current Monaco Editor version: <!-- monaco-editor-version -->`monaco-editor@^0.52.2`<!-- /monaco-editor-version -->
+[![monthly downloads](https://img.shields.io/npm/dm/monaco-esm)](https://www.npmjs.com/package/monaco-esm)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/monaco-esm.svg?style=flat)](https://www.npmjs.com/package/monaco-esm)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/kachurun/monaco-esm/pulls)
 
-The utility to easily set up `monaco-editor` as native ES modules in your browser, without bundlers, css files and workers.
+> A native ES module build of Monaco Editor — no bundlers, no AMD, no RequireJS. Just import and start coding.
 
-## Synopsis
+Current Monaco version: <!-- monaco-editor-version -->`monaco-editor@^0.52.2`<!-- /monaco-editor-version -->
 
-Configure and use Monaco Editor directly in the browser via native ES modules, without needing to use webpack or any other module bundler.
+---
 
-## Motivation
+## Why this exists
 
-Monaco Editor is a powerful code editor, but its default distribution is AMD-based and requires bundler configuration for integration. Even with packages like `@monaco-editor/loader`, you still depend on a clunky CDN and it loads `requirejs`, which can lead to weird problems with your app. This project provides a way to use Monaco Editor as ES modules, making it easy to integrate into modern web projects, including those using native ESM, Vite, or no build step at all.
+Monaco Editor powers VS Code — but using it outside of that context is a headache. By default, it's distributed as an AMD module and requires `require.js` to load. Even community tools like `@monaco-editor/loader` rely on dynamic CDN scripts and require additional setup for workers and styles.
 
-## How it works
+This package provides a modern ESM-friendly build of Monaco Editor that can be used directly in the browser or in any bundler without dealing with `require.js`, manual worker registration, or separate CSS files.
 
-This project provides a pre-built, ESM-compatible version of Monaco Editor. You can import and use Monaco directly in your browser or ESM-based project, with no extra configuration. The build process uses esbuild to bundle Monaco Editor, its workers, and CSS as ESM modules. The utilities `loadCss` and `initMonacoEditor` handle CSS injection and worker setup for you.
+---
 
-## Documentation
+## What it does
 
-#### Contents
+- ✅ Native ES module build of Monaco Editor
+- ✅ Bundles all workers and CSS using `esbuild`
+- ✅ No external loader or config required
+- ✅ Works in modern browsers and with any bundler
+- ✅ Exports full Monaco API and TypeScript types
 
-- [Installation](#installation)
-- [Introduction](#introduction)
-- [Usage](#usage)
-  - [In the Browser (No Bundler)](#in-the-browser-no-bundler)
-  - [In Your ESM Project](#in-your-esm-project)
-- [How it Works](#how-it-works)
-- [Notes](#notes)
-  - [For `electron` users](#for-electron-users)
-  - [For `Next.js` users](#for-nextjs-users)
-- [Entrypoints](#entrypoints)
+---
 
-### Installation
+## Install
 
 ```bash
 npm install monaco-esm
 ```
 
-### Introduction
+---
 
-This package provides ESM builds of Monaco Editor. You can import the editor and languages directly as ES modules. The main utilities are:
+## Usage
 
-- `loadCss(styleId = 'monaco-editor-styles', doc = document)`: Injects Monaco Editor's CSS into the page.
-- `initMonacoEditor()`: Sets up Monaco's web workers and returns the Monaco API.
+### With a bundler (Vite, Webpack, Rollup, etc.)
 
-### Usage
+```ts
+import { monaco, loadCss } from 'monaco-esm';
 
-#### In the Browser (No Bundler)
+loadCss(); // Inject Monaco Editor styles into the page
 
-You can use Monaco Editor directly in the browser with native ES modules.
+monaco.editor.create(document.getElementById('container'), {
+  value: 'console.log("Hello, world!");',
+  language: 'javascript'
+});
+```
 
-Example:
+---
+
+### In the browser (no bundler)
 
 ```html
 <script type="module">
-  import { loadCss, initMonacoEditor } from 'https://esm.sh/monaco-esm';
+  import { monaco, loadCss } from 'https://esm.sh/monaco-esm';
 
   loadCss();
-  const monaco = initMonacoEditor();
 
   monaco.editor.create(document.getElementById('container'), {
-    value: [
-      'function hello(name: string = "world") {',
-      '\tconsole.log(`Hello ${name}!`);',
-      '}'
-    ].join('\n'),
-    language: 'typescript'
+    value: 'function hello(name = "world") {\n  console.log(`Hello ${name}!`);\n}',
+    language: 'javascript'
   });
 </script>
 ```
 
-[Live Example on CodeSandbox](https://codesandbox.io/p/sandbox/clever-sunset-7xcp4q)
+👉 [Live Example on CodeSandbox](https://codesandbox.io/p/sandbox/clever-sunset-7xcp4q)
 
-#### Or if you bundle your project with Vite/Webpack/Rollup/Esbuild/etc:
+---
 
-```js
-import { loadCss, initMonacoEditor } from 'monaco-esm';
+## Why not use `@monaco-editor/loader`?
 
-await loadCss();
-const monaco = await initMonacoEditor();
+`@monaco-editor/loader` solves part of the problem — but it still:
 
-monaco.editor.create(document.getElementById('container'), {
-  value: [
-    'function hello(name: string = "world") {',
-    '\tconsole.log(`Hello ${name}!`);',
-    '}'
-  ].join('\n'),
-  language: 'typescript'
-});
+- Loads Monaco via CDN
+- Requires `require.js` (AMD)
+- Needs custom worker setup
+- Doesn’t inject styles
+
+`monaco-esm` removes all that friction:
+
+- Native ES module build
+- No CDN or AMD loader
+- Workers included and auto-registered
+- One-liner for CSS injection
+- Cleaner setup and better compatibility
+
+---
+
+## API Overview
+
+This package exports:
+
+- `monaco`: Full Monaco Editor API
+- `loadCss(styleId?, doc?)`: Injects Monaco’s built-in CSS into the document
+- Re-exports all types and APIs from `monaco-editor`
+
+---
+
+## TypeScript Support
+
+You don’t need to install `monaco-editor` separately. All types and APIs are re-exported:
+
+```ts
+import type { monaco, editor } from 'monaco-esm';
+
+export type MonacoEditor = typeof monaco;
+export type MonacoModel = editor.ITextModel;
 ```
 
-## Entrypoints
+---
 
-This package provides two entrypoints, configured in `package.json`:
+## Entry Points
 
-- **module**: Points to the ESM entry (`dist/esm.js`). Most modern bundlers and native ESM environments will resolve `import { ... } from 'monaco-esm'` to this file.
-- **browser**: Points to the statically bundled ESM file (`dist/bundle.js`). Some tools/environments (like certain bundlers or browser-focused setups) may resolve `import { ... } from 'monaco-esm/browser'` to this file.
+This package provides two standard Node-compatible entrypoints:
 
-**You should import from `monaco-esm` directly:**
+- `dist/index.mjs` — ESM build (used by modern bundlers and `type: module` projects)
+- `dist/index.cjs` — CommonJS build (for Node.js environments)
 
-```js
-import { loadCss, initMonacoEditor } from 'monaco-esm';
+By default, most tools will resolve the correct one automatically. You can also import explicitly if needed:
+
+```ts
+// ESM
+import { monaco } from 'monaco-esm';
+
+// CommonJS
+const { monaco } = require('monaco-esm');
 ```
 
-or, if your environment supports the `browser` field and you specifically want the bundle:
+---
 
-```js
-import { loadCss, initMonacoEditor } from 'monaco-esm/browser';
-```
+## Notes
+
+### Electron
+
+This package works well in Electron. If you’re loading workers in a sandboxed context, you may need to configure security policies accordingly.
+
+### Next.js
+
+You can use `monaco-esm` in Next.js projects, but make sure to call `loadCss()` only on the client side (e.g., inside a `useEffect`).
+
+---
 
 ## License
 
-[MIT](./LICENSE)
+MIT — see [LICENSE](./LICENSE)

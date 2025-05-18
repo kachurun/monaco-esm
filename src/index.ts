@@ -19,6 +19,30 @@ import css from '../.build/index.css';
 
 export * from 'monaco-editor';
 
+if (!(globalThis as any).MonacoEnvironment) {
+    (globalThis as any).MonacoEnvironment = {
+        getWorker(_: any, label: string) {
+            if (label === 'json') {
+                return JsonWorker();
+            }
+
+            if (label === 'css' || label === 'scss' || label === 'less') {
+                return CssWorker();
+            }
+
+            if (label === 'html' || label === 'handlebars' || label === 'razor') {
+                return HtmlWorker();
+            }
+
+            if (label === 'typescript' || label === 'javascript') {
+                return TSWorker();
+            }
+
+            return EditorWorker();
+        },
+    };
+}
+
 export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
     if (doc.getElementById(styleId)) {
         return;
@@ -32,30 +56,4 @@ export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
     doc.head.appendChild(style);
 }
 
-export function initMonacoEditor(): typeof monaco {
-    if (!(globalThis as any).MonacoEnvironment) {
-        (globalThis as any).MonacoEnvironment = {
-            getWorker(_: any, label: string) {
-                if (label === 'json') {
-                    return JsonWorker();
-                }
-
-                if (label === 'css' || label === 'scss' || label === 'less') {
-                    return CssWorker();
-                }
-
-                if (label === 'html' || label === 'handlebars' || label === 'razor') {
-                    return HtmlWorker();
-                }
-
-                if (label === 'typescript' || label === 'javascript') {
-                    return TSWorker();
-                }
-
-                return EditorWorker();
-            },
-        };
-    }
-
-    return monaco;
-}
+export { monaco };

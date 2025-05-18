@@ -1,7 +1,6 @@
-import { initMonacoEditor, loadCss } from 'monaco-esm';
+import { loadCss, monaco } from 'monaco-esm';
 
 loadCss();
-const monaco = initMonacoEditor();
 
 monaco.editor.create(document.getElementById('container'), {
     value: ['function x(a: string) {', '\tconsole.log("Hello world!", a);', '}'].join('\n'),
