@@ -1,7 +1,6 @@
 /* eslint-disable import/order */
-
 // @ts-ignore
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
+import * as monaco from 'monaco-editor';
 
 // @ts-ignore
 import CssWorker from '../.build/css.worker.js';
@@ -17,9 +16,13 @@ import TSWorker from '../.build/ts.worker.js';
 // @ts-ignore
 import css from '../.build/index.css';
 
-import type { InitMonacoOptions } from './types.ts';
+import type { LocalCustomTSWebWorkerFactory } from './monaco.d.ts';
 
-initMonaco();
+type InitMonacoOptions = {
+    customTSWorkerPath?: string;
+    customTSWorkerFactory?: LocalCustomTSWebWorkerFactory;
+    getWorker?: (workerId: string, label: string) => Promise<Worker> | Worker;
+};
 
 const setTSWorkerOptions = (options: monaco.languages.typescript.WorkerOptions) => {
     const ts = monaco.languages.typescript;
@@ -87,6 +90,8 @@ export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
 
     doc.head.appendChild(style);
 }
+
+initMonaco();
 
 export * from 'monaco-editor';
 export { monaco };

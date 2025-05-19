@@ -19,8 +19,10 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "./src"
   },
-  "include": ["build.ts", "src/**/*.ts", "plugins/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "test", "dist"]
 }

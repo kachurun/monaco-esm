@@ -1,5 +1,3 @@
-/// <reference path="./monaco.d.ts" />
-
 /**
  * A few types used by webapp/src/tsworker.ts
  *
@@ -20,3 +18,5 @@ declare namespace monaco.languages.typescript {
         customWorkerPath?: string;
     }
 }
+
+export type LocalCustomTSWebWorkerFactory = monaco.languages.typescript.CustomTSWebWorkerFactory;
