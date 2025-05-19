@@ -1,6 +1,6 @@
 {
   "name": "monaco-esm",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -11,18 +11,15 @@
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs"
   },
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js && tsc --emitDeclarationOnly",
+    "build": "tsx build.ts && tsc --emitDeclarationOnly",
     "prepublishOnly": "npm run build"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kachurun/monaco-esm.git"
   },
-
   "author": "Maksim Kachurin",
   "license": "ISC",
   "bugs": {
@@ -31,13 +28,16 @@
   "homepage": "https://github.com/kachurun/monaco-esm#readme",
   "description": "Native ES module build of Monaco Editor with bundled workers and styles. No AMD, no config — just import and go.",
   "dependencies": {
-    "esbuild": "^0.25.4",
     "monaco-editor": "^0.52.2"
   },
   "devDependencies": {
     "@flexbe/eslint-config": "^1.0.7",
-    "esbuild-plugin-inline-worker": "^0.1.1",
-    "eslint": "^9.27.0"
+    "@types/find-cache-dir": "^3.2.1",
+    "@types/node": "^22.15.19",
+    "esbuild": "^0.25.4",
+    "eslint": "^9.27.0",
+    "find-cache-dir": "^5.0.0",
+    "tsx": "^4.19.4"
   },
   "files": [
     "src/",

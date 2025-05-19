@@ -17,11 +17,43 @@ import TSWorker from '../.build/ts.worker.js';
 // @ts-ignore
 import css from '../.build/index.css';
 
-export * from 'monaco-editor';
+import type { InitMonacoOptions } from './types.ts';
 
-if (!(globalThis as any).MonacoEnvironment) {
+initMonaco();
+
+const setTSWorkerOptions = (options: monaco.languages.typescript.WorkerOptions) => {
+    const ts = monaco.languages.typescript;
+    ts.javascriptDefaults.setWorkerOptions(options);
+    ts.typescriptDefaults.setWorkerOptions(options);
+};
+
+export function initMonaco(options: InitMonacoOptions = {}) {
+    let extendTSWorkerCode = '';
+
+    if (options.customTSWorkerFactory) {
+        extendTSWorkerCode = [
+            // We need this to prevent self.importScripts(createData.customWorkerPath)
+            'self.importScripts = () => null;',
+            `self.customTSWorkerFactory = ${ options.customTSWorkerFactory.toString() };`,
+        ].join('\n');
+
+        setTSWorkerOptions({ customWorkerPath: 'data:,' });
+    }
+    else if (options.customTSWorkerPath) {
+        setTSWorkerOptions({ customWorkerPath: options.customTSWorkerPath });
+    }
+
     (globalThis as any).MonacoEnvironment = {
         getWorker(_: any, label: string) {
+            // Custom user defined workers, must return a Worker instance
+            if (typeof options.getWorker === 'function') {
+                const result = options.getWorker(label, 'monaco-editor');
+
+                if (result) {
+                    return result;
+                }
+            }
+
             if (label === 'json') {
                 return JsonWorker();
             }
@@ -35,7 +67,7 @@ if (!(globalThis as any).MonacoEnvironment) {
             }
 
             if (label === 'typescript' || label === 'javascript') {
-                return TSWorker();
+                return TSWorker(extendTSWorkerCode);
             }
 
             return EditorWorker();
@@ -56,4 +88,5 @@ export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
     doc.head.appendChild(style);
 }
 
+export * from 'monaco-editor';
 export { monaco };

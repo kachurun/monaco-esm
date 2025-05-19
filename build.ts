@@ -1,11 +1,16 @@
 import esbuild from 'esbuild';
-import inlineWorkerPlugin from 'esbuild-plugin-inline-worker';
 import fs from 'fs';
 import path from 'path';
 
+
+import { inlineCss } from './plugins/inline-css.ts';
+import { inlineWorkerPlugin } from './plugins/inline-worker.ts';
+
+import type { BuildOptions, BuildResult } from 'esbuild';
+
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-removeDir('dist');
+removeDir('dist', undefined);
 
 const workerEntryPoints = [
     'vs/language/json/json.worker.js',
@@ -14,26 +19,6 @@ const workerEntryPoints = [
     'vs/language/typescript/ts.worker.js',
     'vs/editor/editor.worker.js',
 ];
-
-const onlyInlineLocalCss = {
-    name: 'only-inline-local-css',
-    setup(build) {
-        build.onLoad({ filter: /\.css$/ }, async(args) => {
-            if (!args.path.includes('node_modules')) {
-                return {
-                    contents: await fs.promises.readFile(args.path, 'utf8'),
-                    loader: 'text',
-                };
-            }
-
-            // For node_modules CSS, treat as empty (ignored)
-            return {
-                contents: '',
-                loader: 'text',
-            };
-        });
-    },
-};
 
 async function runBuild() {
     console.group('Building...');
@@ -64,7 +49,7 @@ async function runBuild() {
         bundle: true,
         format: 'esm',
         outfile: path.join(__dirname, 'dist', 'index.mjs'),
-        plugins: [onlyInlineLocalCss, inlineWorkerPlugin()],
+        plugins: [inlineCss({ exclude: /node_modules/ }), inlineWorkerPlugin()],
         loader: {
             '.css': 'text',
         },
@@ -76,7 +61,7 @@ async function runBuild() {
         bundle: true,
         format: 'cjs',
         outfile: path.join(__dirname, 'dist', 'index.cjs'),
-        plugins: [onlyInlineLocalCss, inlineWorkerPlugin()],
+        plugins: [inlineCss({ exclude: /node_modules/ }), inlineWorkerPlugin()],
         loader: {
             '.css': 'text',
         },
@@ -87,13 +72,13 @@ async function runBuild() {
     console.groupEnd();
 }
 
-runBuild();
+void runBuild();
 
 /**
  * @param {import ('esbuild').BuildOptions} opts
  */
-async function build(opts) {
-    return esbuild.build(opts).then((result) => {
+async function build(opts: BuildOptions): Promise<void> {
+    return esbuild.build(opts).then((result: BuildResult) => {
         if (result.errors.length > 0) {
             console.error(result.errors);
         }
@@ -108,7 +93,7 @@ async function build(opts) {
  * @param {string} _dirPath
  * @param {(filename: string) => boolean} [keep]
  */
-function removeDir(_dirPath, keep) {
+function removeDir(_dirPath: string, keep?: (filename: string) => boolean): void {
     if (typeof keep === 'undefined') {
         keep = () => false;
     }
@@ -126,13 +111,13 @@ function removeDir(_dirPath, keep) {
      * @param {string} relativeDirPath
      * @returns {boolean}
      */
-    function rmDir(dirPath, relativeDirPath) {
+    function rmDir(dirPath: string, relativeDirPath: string): boolean {
         let keepsFiles = false;
         const entries = fs.readdirSync(dirPath);
         for (const entry of entries) {
             const filePath = path.join(dirPath, entry);
             const relativeFilePath = path.join(relativeDirPath, entry);
-            if (keep(relativeFilePath)) {
+            if (keep!(relativeFilePath)) {
                 keepsFiles = true;
                 continue;
             }

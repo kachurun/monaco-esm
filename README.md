@@ -148,6 +148,62 @@ You can use `monaco-esm` in Next.js projects, but make sure to call `loadCss()` 
 
 ---
 
+## Advanced: `initMonaco` Customization
+
+The `initMonaco` method is called automatically when you import this package, so you usually **do not need to call it yourself**. However, you can call it manually to customize Monaco's worker setup and TypeScript language service behavior.
+
+### Why customize?
+
+You might want to:
+
+- Provide your own `getWorker` method to control how Monaco spawns web workers
+- Specify a `customTSWorkerPath` to load a custom TypeScript worker script (must export a `customTSWorkerFactory`)
+- Directly provide a `customTSWorkerFactory` function to extend or override the TypeScript language service worker
+
+### Usage
+
+```ts
+import { initMonaco } from 'monaco-esm';
+
+// 1. Provide your own getWorker method
+initMonaco({
+  getWorker: (workerId, label) => {
+    // Return a custom Worker instance
+    if (label === 'my-custom-language') {
+      return new Worker(...);
+    }
+    // ...handle other labels
+  },
+});
+
+// 2. Specify a custom TypeScript worker path
+//    This must set a `self.customTSWorkerFactory` function
+initMonaco({
+  customTSWorkerPath: '/my-custom-ts-worker.js',
+});
+
+// 3. Extend the TypeScript language service with a custom factory
+initMonaco({
+  // NOTE: This function will be stringified and passed to the worker, so you can't use closures here
+  customTSWorkerFactory: (TSWorkerClass, tsc, libs) => {
+    class CustomTSWorker extends TSWorkerClass {
+      constructor(ctx, createData) {
+        super(ctx, createData);
+        // Your custom logic here
+      }
+    }
+    return CustomTSWorker;
+  },
+});
+```
+
+- If you use `customTSWorkerFactory`, you can extend Monaco's TypeScript language service worker. See the [original tsWorker implementation](https://raw.githubusercontent.com/microsoft/monaco-editor/refs/heads/main/src/language/typescript/tsWorker.ts) for what you can override or extend.
+- If you use `customTSWorkerPath`, the file must assign a `customTSWorkerFactory` function to `self`.
+
+**Note:** These options are advanced and only needed for deep customization. For most users, the default setup is sufficient.
+
+---
+
 ## License
 
 MIT — see [LICENSE](./LICENSE)

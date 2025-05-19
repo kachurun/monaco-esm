@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -18,8 +19,8 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "nodenext"
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*.ts", "src/index.d.ts"],
+  "include": ["build.ts", "src/**/*.ts", "plugins/**/*.ts"],
   "exclude": ["node_modules", "test", "dist"]
 }
