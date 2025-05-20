@@ -16,11 +16,11 @@ import TSWorker from '../.build/ts.worker.js';
 // @ts-ignore
 import css from '../.build/index.css';
 
-import type { LocalCustomTSWebWorkerFactory } from './monaco.d.ts';
+import type { CustomTSWebWorkerFactory } from './types.ts';
 
 type InitMonacoOptions = {
     customTSWorkerPath?: string;
-    customTSWorkerFactory?: LocalCustomTSWebWorkerFactory;
+    customTSWorkerFactory?: CustomTSWebWorkerFactory;
     getWorker?: (workerId: string, label: string) => Promise<Worker> | Worker;
 };
 
@@ -94,4 +94,8 @@ export function loadCss(styleId = 'monaco-editor-styles', doc = document) {
 initMonaco();
 
 export * from 'monaco-editor';
-export { monaco };
+export * from './types.ts';
+
+export {
+    monaco
+};
