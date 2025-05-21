@@ -1,6 +1,6 @@
 {
   "name": "monaco-esm",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -40,7 +40,6 @@
     "tsx": "^4.19.4"
   },
   "files": [
-    "src/",
     "dist/",
     "README.md",
     "LICENSE"
