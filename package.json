@@ -33,7 +33,7 @@
   "devDependencies": {
     "@flexbe/eslint-config": "^1.0.7",
     "@types/find-cache-dir": "^3.2.1",
-    "@types/node": "^22.15.19",
+    "@types/node": "^24.0.1",
     "esbuild": "^0.25.4",
     "eslint": "^9.27.0",
     "find-cache-dir": "^5.0.0",
