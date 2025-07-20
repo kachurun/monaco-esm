@@ -20,6 +20,14 @@ const workerEntryPoints = [
     'vs/editor/editor.worker.js',
 ];
 
+const individualWorkerEntries = [
+    { entry: './src/workers/css.ts', name: 'css' },
+    { entry: './src/workers/html.ts', name: 'html' },
+    { entry: './src/workers/json.ts', name: 'json' },
+    { entry: './src/workers/typescript.ts', name: 'typescript' },
+    { entry: './src/workers/editor.ts', name: 'editor' },
+];
+
 /**
  * Format bytes as human-readable text.
  * @param {number} bytes Number of bytes.
@@ -128,6 +136,32 @@ async function runBuild() {
         },
     });
     reportFileSize('dist/index.cjs', 'Monaco Editor CJS Bundle');
+
+    console.log('Bundle Individual Workers');
+    // Build individual worker entry points
+    for (const worker of individualWorkerEntries) {
+        await build({
+            entryPoints: [worker.entry],
+            bundle: true,
+            format: 'esm',
+            outfile: path.join(__dirname, 'dist', 'workers', `${ worker.name }.mjs`),
+            plugins: [rawPlugin()],
+        });
+
+        await build({
+            entryPoints: [worker.entry],
+            bundle: true,
+            format: 'cjs',
+            outfile: path.join(__dirname, 'dist', 'workers', `${ worker.name }.cjs`),
+            plugins: [rawPlugin()],
+        });
+    }
+
+    const workerDistPaths = individualWorkerEntries.flatMap(worker => [
+        `dist/workers/${ worker.name }.mjs`,
+        `dist/workers/${ worker.name }.cjs`,
+    ]);
+    reportFileSize(workerDistPaths, 'Individual Worker Bundles');
 
     console.log('Build done');
 

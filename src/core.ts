@@ -3,7 +3,7 @@ import { languages } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 
 // @ts-ignore
-import EditorWorker from './workers/editor.worker.ts';
+import EditorWorker from './workers/editor.ts';
 
 import type { CustomTSWebWorkerFactory } from './types.ts';
 

@@ -7,9 +7,36 @@
   "browser": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./workers/css": {
+      "types": "./dist/workers/css.d.ts",
+      "import": "./dist/workers/css.mjs",
+      "require": "./dist/workers/css.cjs"
+    },
+    "./workers/html": {
+      "types": "./dist/workers/html.d.ts",
+      "import": "./dist/workers/html.mjs",
+      "require": "./dist/workers/html.cjs"
+    },
+    "./workers/json": {
+      "types": "./dist/workers/json.d.ts",
+      "import": "./dist/workers/json.mjs",
+      "require": "./dist/workers/json.cjs"
+    },
+    "./workers/typescript": {
+      "types": "./dist/workers/typescript.d.ts",
+      "import": "./dist/workers/typescript.mjs",
+      "require": "./dist/workers/typescript.cjs"
+    },
+    "./workers/editor": {
+      "types": "./dist/workers/editor.d.ts",
+      "import": "./dist/workers/editor.mjs",
+      "require": "./dist/workers/editor.cjs"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
