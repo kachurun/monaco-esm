@@ -1,11 +1,8 @@
 // @ts-ignore
-import { languages } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
-
-// @ts-ignore
-import EditorWorker from './workers/editor.ts';
+import { languages } from 'monaco-editor/esm/vs/editor/editor.api.js';
 
 import type { CustomTSWebWorkerFactory } from './types.ts';
+import type * as monaco from 'monaco-editor';
 
 type WorkerFactory = (appendCode?: string) => Worker;
 
@@ -19,6 +16,7 @@ type InitMonacoOptions = {
         html?: WorkerFactory;
         json?: WorkerFactory;
         typescript?: WorkerFactory;
+        editor?: WorkerFactory;
     };
 };
 
@@ -45,7 +43,7 @@ export function initMonaco(options: InitMonacoOptions = {}) {
     }
 
     (globalThis as any).MonacoEnvironment = {
-        getWorker(_: any, label: string) {
+        async getWorker(_: any, label: string) {
             // Custom user defined workers, must return a Worker instance
             if (typeof options.getWorker === 'function') {
                 const result = options.getWorker(label, 'monaco-editor');
@@ -72,8 +70,9 @@ export function initMonaco(options: InitMonacoOptions = {}) {
                 return options.workers.typescript(extendTSWorkerCode);
             }
 
-            // Fallback to editor worker for all cases
-            return EditorWorker();
+            if (options.workers?.editor) {
+                return options.workers.editor();
+            }
         },
     };
 }

@@ -1,3 +1,30 @@
+Notes:
+
+- If u using vite or other bundler which support css bundling, you no need to call `loadCss`
+- If u using vite you can import workers from monaco-editor itself:
+
+```ts
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
+
+initMonaco({
+    workers: {
+        editor: EditorWorker,
+    },
+});
+```
+
+or you can use prebundled version from `monaco-esm/workers`:
+
+```ts
+import EditorWorker from 'monaco-esm/workers/editor';
+
+initMonaco({
+    workers: {
+        editor: EditorWorker,
+    },
+});
+```
+
 # monaco-esm
 
 Made with ❤️ by [flexbe.ai](https://flexbe.ai/) team

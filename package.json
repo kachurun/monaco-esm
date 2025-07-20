@@ -12,6 +12,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.cjs"
+    },
     "./workers/css": {
       "types": "./dist/workers/css.d.ts",
       "import": "./dist/workers/css.mjs",

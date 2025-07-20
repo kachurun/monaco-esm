@@ -101,6 +101,7 @@ async function runBuild() {
         format: 'iife',
         bundle: true,
         entryNames: '[name]',
+        minify: true,
         outdir: path.join(__dirname, '.build'),
     });
 
@@ -112,30 +113,38 @@ async function runBuild() {
 
     console.log('Bundle Monaco Editor');
     await build({
-        entryPoints: ['./src/index.ts'],
+        entryPoints: ['./src/index.ts', './src/core.ts'],
         bundle: true,
         format: 'esm',
-        outfile: path.join(__dirname, 'dist', 'index.mjs'),
+        // outfile: path.join(__dirname, 'dist', 'index.mjs'),
+        outdir: path.join(__dirname, 'dist'),
+        entryNames: '[name]',
+        outExtension: { '.js': '.mjs' },
         external: ['monaco-editor'],
         plugins: [inlineCss({ exclude: /node_modules/ }), rawPlugin()],
+        minify: true,
         loader: {
             '.css': 'text',
         },
     });
-    reportFileSize('dist/index.mjs', 'Monaco Editor ESM Bundle');
+    reportFileSize(['dist/index.mjs', 'dist/core.mjs'], 'Monaco Editor ESM Bundle');
 
     await build({
-        entryPoints: ['./src/index.ts'],
+        entryPoints: ['./src/index.ts', './src/core.ts'],
         bundle: true,
         format: 'cjs',
-        outfile: path.join(__dirname, 'dist', 'index.cjs'),
+        // outfile: path.join(__dirname, 'dist', 'index.cjs'),
+        outdir: path.join(__dirname, 'dist'),
+        entryNames: '[name]',
+        outExtension: { '.js': '.cjs' },
         external: ['monaco-editor'],
         plugins: [inlineCss({ exclude: /node_modules/ }), rawPlugin()],
+        minify: true,
         loader: {
             '.css': 'text',
         },
     });
-    reportFileSize('dist/index.cjs', 'Monaco Editor CJS Bundle');
+    reportFileSize(['dist/index.cjs', 'dist/core.cjs'], 'Monaco Editor CJS Bundle');
 
     console.log('Bundle Individual Workers');
     // Build individual worker entry points
@@ -153,6 +162,7 @@ async function runBuild() {
             bundle: true,
             format: 'cjs',
             outfile: path.join(__dirname, 'dist', 'workers', `${ worker.name }.cjs`),
+            minify: true,
             plugins: [rawPlugin()],
         });
     }

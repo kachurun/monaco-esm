@@ -21,8 +21,8 @@
     "noFallthroughCasesInSwitch": true,
     "allowImportingTsExtensions": true,
     "emitDeclarationOnly": true,
-    "rootDir": "./src"
+    "rootDir": "./"
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*.ts", "plugins/**/*.ts", "build.ts"],
   "exclude": ["node_modules", "test", "dist"]
 }
