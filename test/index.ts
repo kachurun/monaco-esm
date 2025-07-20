@@ -2,12 +2,12 @@ import { initMonaco, loadCss, monaco } from 'monaco-esm';
 
 loadCss();
 initMonaco({
-    customTSWorkerFactory: (TSWorkerClass, tsc, libs) => {
-        return TSWorkerClass;
+    workers: {
+        // html: HtmlWorker,
     },
 });
 
 monaco.editor.create(document.getElementById('container'), {
-    value: ['function x(a: string) {', '\tconsole.log("Hello world!", a);', '}'].join('\n'),
-    language: 'typescript',
+    value: ['<script>\nfunction x(a: string) {', '\tconsole.log("Hello world!", a);', '}\n</script>'].join('\n'),
+    language: 'html',
 });

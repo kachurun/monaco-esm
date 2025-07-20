@@ -4,7 +4,7 @@ import path from 'path';
 
 
 import { inlineCss } from './plugins/inline-css.ts';
-import { inlineWorkerPlugin } from './plugins/inline-worker.ts';
+import { rawPlugin } from './plugins/raw-plugin.ts';
 
 import type { BuildOptions, BuildResult } from 'esbuild';
 
@@ -20,6 +20,59 @@ const workerEntryPoints = [
     'vs/editor/editor.worker.js',
 ];
 
+/**
+ * Format bytes as human-readable text.
+ * @param {number} bytes Number of bytes.
+ * @param {boolean} si True to use metric (SI) units, aka powers of 1000. False to use binary (IEC), aka powers of 1024.
+ * @param {number} dp Number of decimal places to display.
+ * @return {string} Formatted string.
+ */
+function humanFileSize(bytes: number, si = false, dp = 1): string {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+        return `${ bytes } B`;
+    }
+
+    const units = si
+        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    let u = -1;
+    const r = 10 ** dp;
+
+    do {
+        bytes /= thresh;
+        ++u;
+    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+    return `${ bytes.toFixed(dp) } ${ units[u] }`;
+}
+
+/**
+ * Report the size of built files
+ * @param {string | string[]} filePaths - Path(s) to the built file(s)
+ * @param {string} description - Description of what was built
+ */
+function reportFileSize(filePaths: string | string[], description: string): void {
+    const paths = Array.isArray(filePaths) ? filePaths : [filePaths];
+
+    console.log(`📦 ${ description }:`);
+
+    for (const filePath of paths) {
+        const fullPath = path.isAbsolute(filePath) ? filePath : path.join(__dirname, filePath);
+
+        if (fs.existsSync(fullPath)) {
+            const stats = fs.statSync(fullPath);
+            const size = stats.size;
+
+            const relativePath = path.relative(__dirname, fullPath);
+            console.log(`   ${ relativePath }: ${ humanFileSize(size) }`);
+        }
+    }
+
+    console.log();
+}
+
 async function runBuild() {
     console.group('Building...');
 
@@ -32,16 +85,22 @@ async function runBuild() {
             '.ttf': 'dataurl',
         },
     });
+    reportFileSize('.build/index.css', 'Monaco Editor CSS');
 
     console.log('Pre-Build Monaco Editor Workers');
     await build({
         entryPoints: workerEntryPoints.map(entry => `node_modules/monaco-editor/esm/${ entry }`),
-        bundle: true,
         format: 'iife',
-        // outbase: 'node_modules/monaco-editor/esm/',
-        outdir: path.join(__dirname, '.build'),
+        bundle: true,
         entryNames: '[name]',
+        outdir: path.join(__dirname, '.build'),
     });
+
+    const workerPaths = workerEntryPoints.map((entry) => {
+        const basename = path.basename(entry, '.js');
+        return `.build/${ basename }.js`;
+    });
+    reportFileSize(workerPaths, 'Monaco Editor Workers');
 
     console.log('Bundle Monaco Editor');
     await build({
@@ -49,23 +108,26 @@ async function runBuild() {
         bundle: true,
         format: 'esm',
         outfile: path.join(__dirname, 'dist', 'index.mjs'),
-        plugins: [inlineCss({ exclude: /node_modules/ }), inlineWorkerPlugin()],
+        external: ['monaco-editor'],
+        plugins: [inlineCss({ exclude: /node_modules/ }), rawPlugin()],
         loader: {
             '.css': 'text',
         },
     });
+    reportFileSize('dist/index.mjs', 'Monaco Editor ESM Bundle');
 
-    console.log('Bundle Monaco Editor (CJS)');
     await build({
         entryPoints: ['./src/index.ts'],
         bundle: true,
         format: 'cjs',
         outfile: path.join(__dirname, 'dist', 'index.cjs'),
-        plugins: [inlineCss({ exclude: /node_modules/ }), inlineWorkerPlugin()],
+        external: ['monaco-editor'],
+        plugins: [inlineCss({ exclude: /node_modules/ }), rawPlugin()],
         loader: {
             '.css': 'text',
         },
     });
+    reportFileSize('dist/index.cjs', 'Monaco Editor CJS Bundle');
 
     console.log('Build done');
 
@@ -134,3 +196,4 @@ function removeDir(_dirPath: string, keep?: (filename: string) => boolean): void
         return keepsFiles;
     }
 }
+
