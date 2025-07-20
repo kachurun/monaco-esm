@@ -1,20 +1,60 @@
 {
   "name": "monaco-esm",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.cjs"
+    },
+    "./workers": {
+      "types": "./dist/workers/index.d.ts",
+      "import": "./dist/workers/index.mjs",
+      "require": "./dist/workers/index.cjs"
+    },
+    "./workers/css": {
+      "types": "./dist/workers/css.d.ts",
+      "import": "./dist/workers/css.mjs",
+      "require": "./dist/workers/css.cjs"
+    },
+    "./workers/html": {
+      "types": "./dist/workers/html.d.ts",
+      "import": "./dist/workers/html.mjs",
+      "require": "./dist/workers/html.cjs"
+    },
+    "./workers/json": {
+      "types": "./dist/workers/json.d.ts",
+      "import": "./dist/workers/json.mjs",
+      "require": "./dist/workers/json.cjs"
+    },
+    "./workers/typescript": {
+      "types": "./dist/workers/typescript.d.ts",
+      "import": "./dist/workers/typescript.mjs",
+      "require": "./dist/workers/typescript.cjs"
+    },
+    "./workers/editor": {
+      "types": "./dist/workers/editor.d.ts",
+      "import": "./dist/workers/editor.mjs",
+      "require": "./dist/workers/editor.cjs"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsx build.ts && tsc --emitDeclarationOnly",
-    "prepublishOnly": "npm run build"
+    "build": "bun run prebuild && bun run build:vite && bun run build:types",
+    "build:vite": "vite build",
+    "build:types": "tsc --emitDeclarationOnly --project tsconfig.build.json",
+    "prebuild": "tsx build.ts",
+    "prepublishOnly": "bun run build"
   },
   "repository": {
     "type": "git",
@@ -27,21 +67,27 @@
   },
   "homepage": "https://github.com/kachurun/monaco-esm#readme",
   "description": "Native ES module build of Monaco Editor with bundled workers and styles. No AMD, no config — just import and go.",
-  "dependencies": {
-    "monaco-editor": "^0.52.2"
+  "peerDependencies": {
+    "monaco-editor": "^0.48.0"
   },
   "devDependencies": {
-    "@flexbe/eslint-config": "^1.0.7",
-    "@types/find-cache-dir": "^3.2.1",
-    "@types/node": "^24.0.1",
-    "esbuild": "^0.25.4",
-    "eslint": "^9.27.0",
-    "find-cache-dir": "^5.0.0",
-    "tsx": "^4.19.4"
+    "monaco-editor": "^0.52.2",
+    "@flexbe/eslint-config": "^1.0.11",
+    "@types/find-cache-dir": "^5.0.2",
+    "@types/node": "^24.0.15",
+    "esbuild": "^0.25.8",
+    "eslint": "^9.31.0",
+    "find-cache-dir": "^6.0.0",
+    "tsx": "^4.20.3",
+    "vite": "^7.0.5"
   },
   "files": [
     "dist/",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "workspaces": [
+    "test"
+  ],
+  "packageManager": "bun@1.2.19"
 }

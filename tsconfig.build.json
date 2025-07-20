@@ -12,7 +12,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
+    "incremental": false,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
@@ -21,8 +21,8 @@
     "noFallthroughCasesInSwitch": true,
     "allowImportingTsExtensions": true,
     "emitDeclarationOnly": true,
-    "rootDir": "./"
+    "rootDir": "./src"
   },
-  "include": ["src/**/*.ts", "plugins/**/*.ts", "build.ts"],
-  "exclude": ["node_modules", "test", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "test", "dist", "build.ts", "plugins"]
 }

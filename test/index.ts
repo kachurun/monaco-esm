@@ -1,13 +1,18 @@
-import { initMonaco, loadCss, monaco } from 'monaco-esm';
+import { EditorWorker, HtmlWorker, initMonaco, monaco } from 'monaco-esm';
 
-loadCss();
-initMonaco({
-    customTSWorkerFactory: (TSWorkerClass, tsc, libs) => {
-        return TSWorkerClass;
-    },
-});
+const run = async() => {
+    // loadCss();
+    initMonaco({
+        workers: {
+            editor: EditorWorker,
+            html: HtmlWorker,
+        },
+    });
 
-monaco.editor.create(document.getElementById('container'), {
-    value: ['function x(a: string) {', '\tconsole.log("Hello world!", a);', '}'].join('\n'),
-    language: 'typescript',
-});
+    monaco.editor.create(document.getElementById('container'), {
+        value: ['<script>\nfunction x(a: string) {', '\tconsole.log("Hello world!", a);', '}\n</script>'].join('\n'),
+        language: 'html',
+    });
+};
+
+void run();
