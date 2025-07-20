@@ -1,8 +1,10 @@
-import { inlineWorker } from './_inlineWorker.ts';
-
+import { createWorkerFactory } from './_createWorkerFactory.ts';
 // @ts-ignore
-import TSWorker from '../../.build/ts.worker.js?raw';
+import typescriptWorkerCode from '../../.build/ts.worker.js?raw';
 
-export default function CreateWorker(appendCode?: string) {
-    return inlineWorker('ts', TSWorker, appendCode);
-}
+const typescriptWorker = createWorkerFactory(typescriptWorkerCode);
+
+export {
+    typescriptWorker,
+    typescriptWorker as default,
+};

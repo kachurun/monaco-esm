@@ -1,30 +1,3 @@
-Notes:
-
-- If u using vite or other bundler which support css bundling, you no need to call `loadCss`
-- If u using vite you can import workers from monaco-editor itself:
-
-```ts
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
-
-initMonaco({
-    workers: {
-        editor: EditorWorker,
-    },
-});
-```
-
-or you can use prebundled version from `monaco-esm/workers`:
-
-```ts
-import EditorWorker from 'monaco-esm/workers/editor';
-
-initMonaco({
-    workers: {
-        editor: EditorWorker,
-    },
-});
-```
-
 # monaco-esm
 
 Made with ❤️ by [flexbe.ai](https://flexbe.ai/) team
@@ -35,8 +8,6 @@ Made with ❤️ by [flexbe.ai](https://flexbe.ai/) team
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/kachurun/monaco-esm/pulls)
 
 > A native ES module build of Monaco Editor — no bundlers, no AMD, no RequireJS. Just import and start coding.
-
-Current Monaco version: <!-- monaco-editor-version -->`monaco-editor@^0.52.2`<!-- /monaco-editor-version -->
 
 ---
 
@@ -51,7 +22,7 @@ This package provides a modern ESM-friendly build of Monaco Editor that can be u
 ## What it does
 
 - ✅ Native ES module build of Monaco Editor
-- ✅ Bundles all workers and CSS using `esbuild`
+- ✅ Bundles all workers and CSS
 - ✅ No external loader or config required
 - ✅ Works in modern browsers and with any bundler
 - ✅ Exports full Monaco API and TypeScript types
@@ -61,19 +32,20 @@ This package provides a modern ESM-friendly build of Monaco Editor that can be u
 ## Install
 
 ```bash
-npm install monaco-esm
+npm install monaco-esm monaco-editor
 ```
 
 ---
 
 ## Usage
 
-### With a bundler (Vite, Webpack, Rollup, etc.)
+### Basic Setup with Bundler (Vite, Webpack, Rollup, etc.)
 
 ```ts
 import { monaco, loadCss } from 'monaco-esm';
 
-loadCss(); // Inject Monaco Editor styles into the page
+// Inject Monaco Editor styles into the page
+loadCss();
 
 monaco.editor.create(document.getElementById('container'), {
   value: 'console.log("Hello, world!");',
@@ -81,7 +53,37 @@ monaco.editor.create(document.getElementById('container'), {
 });
 ```
 
----
+**Note**: If you're using a bundler that supports CSS bundling (like Vite), you don't need to call `loadCss()`. Otherwise, call it to inject styles into the page.
+
+### Using Custom Workers with Vite
+
+#### Option 1: Import workers from monaco-editor directly
+
+```ts
+import { initMonaco } from 'monaco-esm';
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
+
+initMonaco({
+    workers: {
+        editor: EditorWorker,
+    },
+});
+```
+
+#### Option 2: Use prebundled workers from monaco-esm
+
+```ts
+import { initMonaco } from 'monaco-esm';
+import editorWorker from 'monaco-esm/workers/editor';
+import htmlWorker from 'monaco-esm/workers/html';
+
+initMonaco({
+    workers: {
+        editor: editorWorker,
+        html: htmlWorker,
+    },
+});
+```
 
 ### In the browser (no bundler)
 
@@ -127,6 +129,7 @@ This package exports:
 
 - `monaco`: Full Monaco Editor API
 - `loadCss(styleId?, doc?)`: Injects Monaco's built-in CSS into the document
+- `initMonaco(options?)`: Initialize Monaco with custom configuration (called automatically on import)
 - Re-exports all types and APIs from `monaco-editor`
 
 ---
@@ -163,7 +166,7 @@ const { monaco } = require('monaco-esm');
 
 ---
 
-## Notes
+## Framework-Specific Notes
 
 ### Electron
 
@@ -172,6 +175,13 @@ This package works well in Electron. If you're loading workers in a sandboxed co
 ### Next.js
 
 You can use `monaco-esm` in Next.js projects, but make sure to call `loadCss()` only on the client side (e.g., inside a `useEffect`).
+
+### Vite
+
+When using Vite, you have two options for handling workers:
+
+1. Import workers directly from `monaco-editor` (see example above)
+2. Use the prebundled workers from `monaco-esm/workers`
 
 ---
 

@@ -1,10 +1,10 @@
 // @ts-ignore
-import { languages } from 'monaco-editor/esm/vs/editor/editor.api.js';
+import { languages } from 'monaco-editor';
 
 import type { CustomTSWebWorkerFactory } from './types.ts';
 import type * as monaco from 'monaco-editor';
 
-type WorkerFactory = (appendCode?: string) => Worker;
+type WorkerFactory = ({ name, append }?: { name?: string; append?: string }) => Worker;
 
 type InitMonacoOptions = {
     customTSWorkerPath?: string;
@@ -20,14 +20,14 @@ type InitMonacoOptions = {
     };
 };
 
-const setTSWorkerOptions = (options: monaco.languages.typescript.WorkerOptions) => {
-    const ts = languages.typescript;
-    ts.javascriptDefaults.setWorkerOptions(options);
-    ts.typescriptDefaults.setWorkerOptions(options);
-};
-
 export function initMonaco(options: InitMonacoOptions = {}) {
     let extendTSWorkerCode = '';
+
+    const setTSWorkerOptions = (options: monaco.languages.typescript.WorkerOptions) => {
+        const ts = languages.typescript;
+        ts.javascriptDefaults.setWorkerOptions(options);
+        ts.typescriptDefaults.setWorkerOptions(options);
+    };
 
     if (options.customTSWorkerFactory) {
         extendTSWorkerCode = [
@@ -55,23 +55,34 @@ export function initMonaco(options: InitMonacoOptions = {}) {
 
             // Use provided worker factories if available
             if (label === 'json' && options.workers?.json) {
-                return options.workers.json();
+                return options.workers.json({
+                    name: 'json',
+                });
             }
 
             if ((label === 'css' || label === 'scss' || label === 'less') && options.workers?.css) {
-                return options.workers.css();
+                return options.workers.css({
+                    name: 'css',
+                });
             }
 
             if ((label === 'html' || label === 'handlebars' || label === 'razor') && options.workers?.html) {
-                return options.workers.html();
+                return options.workers.html({
+                    name: 'html',
+                });
             }
 
             if ((label === 'typescript' || label === 'javascript') && options.workers?.typescript) {
-                return options.workers.typescript(extendTSWorkerCode);
+                return options.workers.typescript({
+                    name: 'typescript',
+                    append: extendTSWorkerCode,
+                });
             }
 
             if (options.workers?.editor) {
-                return options.workers.editor();
+                return options.workers.editor({
+                    name: 'editor',
+                });
             }
         },
     };

@@ -1,4 +1,4 @@
-export * from 'monaco-editor';
+export * as monaco from 'monaco-editor';
 
 // Main initialization function
 export { initMonaco } from './core.ts';

@@ -1,8 +1,10 @@
-import { inlineWorker } from './_inlineWorker.ts';
-
+import { createWorkerFactory } from './_createWorkerFactory.ts';
 // @ts-ignore
-import JsonWorker from '../../.build/json.worker.js?raw';
+import jsonWorkerCode from '../../.build/json.worker.js?raw';
 
-export default function CreateWorker(appendCode?: string) {
-    return inlineWorker('json', JsonWorker, appendCode);
-}
+const jsonWorker = createWorkerFactory(jsonWorkerCode);
+
+export {
+    jsonWorker,
+    jsonWorker as default,
+};
