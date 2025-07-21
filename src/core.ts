@@ -20,6 +20,10 @@ type InitMonacoOptions = {
     };
 };
 
+export * as monaco from 'monaco-editor';
+
+export { loadCss } from './loadCss.ts';
+
 export function initMonaco(options: InitMonacoOptions = {}) {
     let extendTSWorkerCode = '';
 

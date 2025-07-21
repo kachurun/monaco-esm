@@ -1,18 +1,14 @@
-import { EditorWorker, HtmlWorker, initMonaco, monaco } from 'monaco-esm';
+import { initMonaco, monaco } from 'monaco-esm';
+import htmlWorker from 'monaco-esm/workers/html';
 
-const run = async() => {
-    // loadCss();
-    initMonaco({
-        workers: {
-            editor: EditorWorker,
-            html: HtmlWorker,
-        },
-    });
+// loadCss();
+initMonaco({
+    workers: {
+        html: htmlWorker,
+    },
+});
 
-    monaco.editor.create(document.getElementById('container'), {
-        value: ['<script>\nfunction x(a: string) {', '\tconsole.log("Hello world!", a);', '}\n</script>'].join('\n'),
-        language: 'html',
-    });
-};
-
-void run();
+monaco.editor.create(document.getElementById('container'), {
+    value: ['<script>\nfunction x(a: string) {', '\tconsole.log("Hello world!", a);', '}\n</script>'].join('\n'),
+    language: 'html',
+});

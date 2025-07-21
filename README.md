@@ -43,8 +43,25 @@ npm install monaco-esm monaco-editor
 
 ```ts
 import { monaco, loadCss } from 'monaco-esm';
+import { initMonaco } from 'monaco-esm';
+import editorWorker from 'monaco-esm/workers/editor';
+import htmlWorker from 'monaco-esm/workers/html';
+import cssWorker from 'monaco-esm/workers/css';
+import typescriptWorker from 'monaco-esm/workers/typescript';
+import jsonWorker from 'monaco-esm/workers/json';
 
-// Inject Monaco Editor styles into the page
+// Note: add only workers that you need (e.g js/ts worker is pretty heavy so if you going to use only html/css/json, you don't need to add it)
+initMonaco({
+    workers: {
+        editor: editorWorker,
+        html: htmlWorker,
+        css: cssWorker,
+        typescript: typescriptWorker,
+        json: jsonWorker,
+    },
+});
+
+// Use this to inject styles into the page if you're not using bundler that support css bundling (like Vite)
 loadCss();
 
 monaco.editor.create(document.getElementById('container'), {
@@ -57,7 +74,7 @@ monaco.editor.create(document.getElementById('container'), {
 
 ### Using Custom Workers with Vite
 
-#### Option 1: Import workers from monaco-editor directly
+#### You can import workers from monaco-editor directly:
 
 ```ts
 import { initMonaco } from 'monaco-esm';
@@ -66,21 +83,6 @@ import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
 initMonaco({
     workers: {
         editor: EditorWorker,
-    },
-});
-```
-
-#### Option 2: Use prebundled workers from monaco-esm
-
-```ts
-import { initMonaco } from 'monaco-esm';
-import editorWorker from 'monaco-esm/workers/editor';
-import htmlWorker from 'monaco-esm/workers/html';
-
-initMonaco({
-    workers: {
-        editor: editorWorker,
-        html: htmlWorker,
     },
 });
 ```
@@ -136,7 +138,7 @@ This package exports:
 
 ## TypeScript Support
 
-You don't need to install `monaco-editor` separately. All types and APIs are re-exported:
+Both `monaco-esm` and `monaco-editor` provide full TypeScript support. All types and APIs are re-exported:
 
 ```ts
 import type { monaco, editor } from 'monaco-esm';
