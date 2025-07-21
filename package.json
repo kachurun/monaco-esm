@@ -1,6 +1,6 @@
 {
   "name": "monaco-esm",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -68,7 +68,7 @@
   "homepage": "https://github.com/kachurun/monaco-esm#readme",
   "description": "Native ES module build of Monaco Editor with bundled workers and styles. No AMD, no config — just import and go.",
   "peerDependencies": {
-    "monaco-editor": "^0.48.0"
+    "monaco-editor": "^0.52.2"
   },
   "devDependencies": {
     "monaco-editor": "^0.52.2",
