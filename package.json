@@ -74,7 +74,7 @@
     "monaco-editor": "^0.55.1",
     "@flexbe/eslint-config": "^1.0.11",
     "@types/find-cache-dir": "^5.0.2",
-    "@types/node": "^24.0.15",
+    "@types/node": "^25.0.9",
     "esbuild": "^0.27.0",
     "eslint": "^9.31.0",
     "find-cache-dir": "^6.0.0",
